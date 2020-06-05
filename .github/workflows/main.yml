@@ -13,6 +13,12 @@ jobs:
       - name: Setup Node 12
         uses: actions/setup-node@v1.4.2
       
+      - name: Cache node modules
+        uses: actions/cache@v2.0.0
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-gatsby-website-${{ hashFiles('**/package-lock.json') }}
+      
       - name: Install Node.js Dependencies
         run: npm install
       
