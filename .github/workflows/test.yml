@@ -1,0 +1,31 @@
+name: Test
+on:
+  push:
+    branches: ['*', '*/*', '!master']
+  pull_request:
+    types: [opened, reopened]
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['10', '12']
+  
+    steps:
+    - uses: action/checkout@v2
+
+    - name: Setup Node ${{ matrix.node }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node }}
+    
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path: ./node_modules
+        key: ${{ matrix.node }}-${{ runner.os }}-test-${{ hashFiles('**/package-lock.json') }}
+
+    - npm install
+    - npm test
