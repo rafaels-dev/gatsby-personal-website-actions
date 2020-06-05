@@ -22,9 +22,17 @@ jobs:
       - name: Install Node.js Dependencies
         run: npm install
       
+      - run: npm test
+      
       - run: npm run build
         env: 
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
+     
+      - name: Save public folder
+        uses: actions/upload-artifact@v2
+        with:
+          path: public
+          name: public
 
   deploy:
     needs: [build]
@@ -37,5 +45,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: sa-east-1
      
+      - name: Download public folder
+        uses: action/download-artifact@v2
+        with:
+          name: public
+          path: files-to-deploy
+     
       - name: Upload files to S3
-        run: aws s3 sync ./public s3://rafaels.dev --acl public-read --delete
+        run: aws s3 sync ./files-to-deploy s3://rafaels.dev --acl public-read --delete
