@@ -27,5 +27,5 @@ jobs:
         path: ./node_modules
         key: ${{ matrix.node }}-${{ runner.os }}-test-${{ hashFiles('**/package-lock.json') }}
 
-    - npm install
-    - npm test
+    - run: npm install
+    - run: npm test
